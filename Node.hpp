@@ -12,8 +12,10 @@
 
 #include <vector>
 #include <deque>
+#include <queue>
 
 #include <string>
+#include <iostream>
 
 class Poset;
 
@@ -50,7 +52,7 @@ public:
   void setPriority(int p);
   int getPriority();
 
-  // returns whether there are any left
+  // returns true if there are none left, false otherwise
   bool decrUpper();
   bool decrLower();
 
@@ -63,8 +65,6 @@ public:
 
   std::string allUpper();
 
-  bool operator < (const Node &other) const;
-
   // Functions for traversing upper or lower
 
   void beginTraverse();
@@ -74,6 +74,24 @@ public:
 
   int nextUpper();
   int nextLower();
+
+  // Orderings
+
+  struct OrderByPriority{
+    bool operator() (Node* a, Node* b);
+  };
+  
+  struct OrderByLex{
+    bool operator() (Node* a, Node* b);
+  };
+
+  friend std::ostream& operator << (std::ostream &out, const Node &node);
 };
+
+typedef std::priority_queue<Node*, std::vector<Node*>,
+			    Node::OrderByPriority> PriorityOrderQ;
+
+typedef std::priority_queue<Node*, std::vector<Node*>,
+			    Node::OrderByLex> LexOrderQ;
 
 #endif

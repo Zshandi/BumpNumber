@@ -59,16 +59,14 @@ int Node::getPriority(){
   return priority;
 }
 
-// returns whether or not there are any left
+// returns true if there are none left, false otherwise
 bool Node::decrUpper(){
-  upperCount--;
-  return upperCount <= 0;
+  return --upperCount <= 0;
 }
 
-// returns whether or not there are any left
+// returns true if there are none left, false otherwise
 bool Node::decrLower(){
-  lowerCount--;
-  return lowerCount <= 0;
+  return --lowerCount <= 0;
 }
 
 int Node::getLowerCount(){
@@ -91,15 +89,6 @@ string Node::allUpper(){
   return s.str();
 }
 
-bool Node::operator < (const Node &other) const{
-
-  if(priority == -1){
-    return lexLabel > other.lexLabel;
-  }else{
-    return priority < other.priority;
-  }
-}
-
 // Functions for traversing upper or lower
 
 void Node::beginTraverse(){
@@ -119,4 +108,32 @@ int Node::nextUpper(){
 }
 int Node::nextLower(){
   return (*lower)[nextLower_i++];
+}
+
+// Orderings
+
+bool Node::OrderByPriority::operator() ( Node* a, Node* b ){
+  return a->priority < b->priority;
+}
+
+ostream& operator << (ostream &out, const deque<int> &lexLabel){
+  out << "[ ";
+  for(int i = 0; i < lexLabel.size(); i++){
+    out << lexLabel[i] << " ";
+  }
+  out << "]";
+}
+
+bool Node::OrderByLex::operator() ( Node* a, Node* b ){
+  cout << "a: " << a->lexLabel << endl;
+  cout << "b: " << b->lexLabel << endl;
+  cout << "a > b: " << (*(a->lexLabel) > *(b->lexLabel)) << endl;
+  return *(a->lexLabel) > *(b->lexLabel);
+}
+
+// Insertion op
+
+ostream& operator << (ostream &out, const Node &node){
+  out << node.id << "(" << node.priority << ")";
+  return out;
 }

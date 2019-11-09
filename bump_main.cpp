@@ -18,6 +18,7 @@
 using namespace std;
 
 int main(int argc, char** argv){
+  
   if(argc < 2){
     cout << "Usage:" << endl
 	 << " " << argv[0] << " <file name>" << endl;
@@ -26,12 +27,16 @@ int main(int argc, char** argv){
   
   cout << "Reading poset..." << endl;
   Poset fromFile = Poset::readFromFile( argv[1] );
+  
   cout << "Assigning priorities..." << endl;
 
-  srand( time(NULL) );
+  /*srand( time(NULL) );
   for(int i = 0; i < fromFile.getSize(); i++){
     fromFile.assignPriority(i, rand() % 200);
-  }
+  }*/
+  
+  fromFile.assignLexPriority();
+  
   cout << "Ordering poset..." << endl;
   fromFile.findAndOutputOrdering();
 

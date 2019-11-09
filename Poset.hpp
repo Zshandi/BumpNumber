@@ -35,6 +35,8 @@ public:
   void assignPriority(int node, int p);
 
   void findAndOutputOrdering();
+
+  void assignLexPriority();
 };
 
 #endif

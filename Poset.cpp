@@ -87,7 +87,12 @@ void Poset::saveToFile(const char* filename){
   for (int u=0; u<size; u++) {
     out << u;
 
-    cout << nodes[u].allUpper();
+    Node * node = &nodes[u];
+
+    node->beginTraverse();
+    while( node->hasNextUpper() ){
+      cout << " " << node->nextUpper();
+    }
 
     out << " " << size << endl;
   }
@@ -103,29 +108,18 @@ void Poset::assignPriority(int node, int p){
   nodes[node].setPriority(p);
 }
 
-class NodeWrapper{
-public:
-  Node* node;
-  NodeWrapper(Node* n){
-    node = n;
-  }
-  bool operator < (const NodeWrapper &other) const{
-    return (*node) < ( *(other.node) );
-  }
-};
-
 void Poset::findAndOutputOrdering(){
 
-  priority_queue<NodeWrapper> myNodeQ;
+  PriorityOrderQ myNodeQ;
 
   for(int i = 0; i < size; i++){
     if(nodes[i].getLowerCount() == 0){
-      myNodeQ.push( NodeWrapper(nodes+i) );
+      myNodeQ.push( &nodes[i] );
     }
   }
 
   while( !myNodeQ.empty() ){
-    Node* node = myNodeQ.top().node;
+    Node* node = myNodeQ.top();
     myNodeQ.pop();
 
     node->beginTraverse();
@@ -134,17 +128,51 @@ void Poset::findAndOutputOrdering(){
       int upperNode = node->nextUpper();
 
       if( nodes[upperNode].decrLower() ){
-	myNodeQ.push( NodeWrapper(nodes+upperNode) );
+	myNodeQ.push( &nodes[upperNode] );
       }
     }
 
-    cout << node->getID() << " ";
+    cout << *node << " ";
   }
 
-  cout << endl
-       << "Priorities: " << endl;
-  for(int i = 0; i < size; i++){
-    cout << nodes[i].getPriority() << " ";
-  }
   cout << endl;
 }
+
+void Poset::assignLexPriority(){
+
+  LexOrderQ myQ;
+
+  for(int i = 0; i < size; i++){
+    if(nodes[i].getUpperCount() == 0){
+      myQ.push( &nodes[i] );
+    }
+  }
+
+  int currentPriority = 0;
+  
+  while( !myQ.empty() ){
+    Node * node = myQ.top();
+    myQ.pop();
+
+    node->setPriority(currentPriority++);
+
+    node->beginTraverse();
+
+    while( node->hasNextLower() ){
+      int lowerID = node->nextLower();
+
+      Node* lowerNode = &nodes[lowerID];
+
+      lowerNode->addLex( node->getPriority() );
+
+      if( lowerNode->decrUpper() ){
+	myQ.push(lowerNode);
+      }
+    }
+  }
+      
+}
+
+
+
+
