@@ -110,32 +110,64 @@ void Poset::assignPriority(int node, int p){
 
 void Poset::findAndOutputOrdering(){
 
-  PriorityOrderQ myNodeQ;
+  for(int i = 0; i < size; i++){
+    nodes[i].resetCounts();
+  }
+
+  PriorityOrderQ myQ;
 
   for(int i = 0; i < size; i++){
     if(nodes[i].getLowerCount() == 0){
-      myNodeQ.push( &nodes[i] );
+      myQ.push( &nodes[i] );
     }
   }
 
-  while( !myNodeQ.empty() ){
-    Node* node = myNodeQ.top();
-    myNodeQ.pop();
+  Node* node = myQ.top();
+  myQ.pop();
 
-    node->beginTraverse();
+  Node* nextNode = NULL;
+
+  bool bump = false;
+  int bumpNum = 0;
+
+  while( !myQ.empty() || (node != NULL) ){
+
+    if( !myQ.empty() ){
+      nextNode = myQ.top();
+      myQ.pop();
+    }else if(node->getUpperCount() != 0){
+      bump = true;
+      bumpNum++;
+    }
+
+    if(node != NULL){
+      
+      cout << *node;
+      
+      if(bump){
+	cout << "--";
+	bump = false;
+      }else{
+	cout << "  ";
+      }
+      
+      node->beginTraverse();
     
-    while ( node->hasNextUpper() ) {
-      int upperNode = node->nextUpper();
+      while ( node->hasNextUpper() ) {
+	int upperNode = node->nextUpper();
 
-      if( nodes[upperNode].decrLower() ){
-	myNodeQ.push( &nodes[upperNode] );
+	if( nodes[upperNode].decrLower() ){
+	  myQ.push( &nodes[upperNode] );
+	}
       }
     }
 
-    cout << *node << " ";
+    node = nextNode;
+    nextNode = NULL;
   }
 
-  cout << endl;
+  cout << endl
+       << "bump number is " << bumpNum << endl;
 }
 
 void Poset::assignLexPriority(){

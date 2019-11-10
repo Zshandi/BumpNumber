@@ -33,8 +33,6 @@ protected:
   int upperCount;
   int lowerCount;
 
-  //Poset* pos;
-
   int nextUpper_i;
   int nextLower_i;
   
@@ -59,11 +57,9 @@ public:
   int getLowerCount();
   int getUpperCount();
 
-  //void resetCounts();
+  void resetCounts();
 
   void addLex(int lex);
-
-  std::string allUpper();
 
   // Functions for traversing upper or lower
 

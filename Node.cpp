@@ -77,16 +77,13 @@ int Node::getUpperCount(){
   return upperCount;
 }
 
-void Node::addLex(int lex){
-  lexLabel->push_front(lex);
+void Node::resetCounts(){
+  upperCount = upper->size();
+  lowerCount = lower->size();
 }
 
-string Node::allUpper(){
-  stringstream s("");
-  for(int i = 0; i < upper->size(); i++){
-    s << " " << (*upper)[i];
-  }
-  return s.str();
+void Node::addLex(int lex){
+  lexLabel->push_front(lex);
 }
 
 // Functions for traversing upper or lower
@@ -116,18 +113,7 @@ bool Node::OrderByPriority::operator() ( Node* a, Node* b ){
   return a->priority < b->priority;
 }
 
-ostream& operator << (ostream &out, const deque<int> &lexLabel){
-  out << "[ ";
-  for(int i = 0; i < lexLabel.size(); i++){
-    out << lexLabel[i] << " ";
-  }
-  out << "]";
-}
-
 bool Node::OrderByLex::operator() ( Node* a, Node* b ){
-  cout << "a: " << a->lexLabel << endl;
-  cout << "b: " << b->lexLabel << endl;
-  cout << "a > b: " << (*(a->lexLabel) > *(b->lexLabel)) << endl;
   return *(a->lexLabel) > *(b->lexLabel);
 }
 
