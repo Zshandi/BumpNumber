@@ -30,15 +30,15 @@ int main(int argc, char** argv){
   
   cout << "Assigning priorities..." << endl;
 
-  /*srand( time(NULL) );
-  for(int i = 0; i < fromFile.getSize(); i++){
-    fromFile.assignPriority(i, rand() % 200);
-  }*/
+  clock_t start;
+  start = clock();
   
   fromFile.assignLexPriority();
   
   cout << "Ordering poset..." << endl;
   fromFile.findAndOutputOrdering();
+
+  cout << "Time: "<<(clock()-start)/(double(CLOCKS_PER_SEC/1000))<< endl;
 
   return 0;
 }
